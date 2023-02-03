@@ -1,20 +1,49 @@
 <template>
 	<header>
 		<div>
-			<router-link to="/" class="logo"> TIL </router-link>
+			<router-link to="/" class="logo">
+				TIL
+				<span v-if="isUserLogin">by {{ $store.state.username }}</span>
+			</router-link>
 		</div>
 		<div class="navigations">
-			<router-link to="/login">Login</router-link>
-			<router-link to="/signup">Sign Up</router-link>
+			<template v-if="isUserLogin">
+				<a
+					href="javascript:;"
+					@click="logoutUser"
+					class="logout-button"
+				>
+					Logout
+				</a>
+			</template>
+			<template v-else>
+				<router-link to="/login">Login</router-link>
+				<router-link to="/signup">Sign Up</router-link>
+			</template>
 		</div>
 	</header>
 </template>
 
 <script>
-export default {};
+export default {
+	computed: {
+		isUserLogin() {
+			return this.$store.getters.isLogin;
+		},
+	},
+	methods: {
+		logoutUser() {
+			this.$store.commit('clearUsername');
+			this.$router.push('/login');
+		},
+	},
+};
 </script>
 
 <style scoped>
+.username {
+	color: white;
+}
 header {
 	display: flex;
 	justify-content: space-between;
@@ -44,6 +73,9 @@ a.logo {
 	position: fixed;
 	top: 0;
 	width: 100%;
+}
+.logout-button {
+	font-size: 14px;
 }
 a.router-link-exact-active {
 	color: white;
