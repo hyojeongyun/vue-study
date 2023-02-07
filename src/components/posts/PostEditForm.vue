@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import bus from '@/utils/bus.js';
 import { fetchPost, editPost } from '@/api/posts';
 
 export default {
@@ -52,10 +53,11 @@ export default {
 		async submitForm() {
 			const id = this.$route.params.id;
 			try {
-				await editPost(id, {
+				const response = await editPost(id, {
 					title: this.title,
 					contents: this.contents,
 				});
+				bus.$emit('show:toast', `${response.data.title} was editted`);
 				this.$router.push('/main');
 			} catch (error) {
 				this.logMessage = error.response.data.message;

@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import bus from '@/utils/bus.js';
 import { createPost } from '@/api/posts';
 
 export default {
@@ -49,7 +50,10 @@ export default {
 					title: this.title,
 					contents: this.contents,
 				});
-				console.log(response);
+				bus.$emit(
+					'show:toast',
+					`${response.data.data.title} was created`,
+				);
 				this.$router.push('/main');
 			} catch (error) {
 				this.logMessage = error.response.data.message;

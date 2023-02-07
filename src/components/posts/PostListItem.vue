@@ -3,7 +3,7 @@
 		<div class="post-title">{{ postItem.title }}</div>
 		<div class="post-contents">{{ postItem.contents }}</div>
 		<div class="post-time">
-			{{ postItem.createdAt }}
+			{{ postItem.createdAt | formatDate }}
 			<i class="icon ion-md-create" @click="routeEditPage()"></i>
 			<i class="icon ion-md-trash" @click="deleteItem()"></i>
 		</div>
@@ -12,6 +12,7 @@
 
 <script>
 import { deletePost } from '@/api/posts';
+import bus from '@/utils/bus.js';
 
 export default {
 	props: {
@@ -22,8 +23,9 @@ export default {
 	},
 	methods: {
 		async deleteItem() {
-			if (confirm('You want to delete it?')) {
-				await deletePost(this.postItem._id);
+			if (confirm('Delete it?')) {
+				const response = await deletePost(this.postItem._id);
+				bus.$emit('show:toast', `${response.data.title} was deleted`);
 				this.$emit('refresh');
 			}
 		},

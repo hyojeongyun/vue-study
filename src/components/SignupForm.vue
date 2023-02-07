@@ -63,8 +63,8 @@ export default {
 				password: this.password,
 				nickname: this.nickname,
 			};
-			const { data } = await registerUser(userData);
-			this.logMessage = `${data.username}님이 가입되었습니다.`;
+			await registerUser(userData);
+			this.logMessage = `User is created`;
 			this.initForm();
 		},
 		initForm() {

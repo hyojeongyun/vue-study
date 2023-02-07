@@ -33,6 +33,7 @@
 
 <script>
 import { validateEmail } from '@/utils/validation';
+import bus from '@/utils/bus.js';
 
 export default {
 	data() {
@@ -56,7 +57,8 @@ export default {
 					username: this.username,
 					password: this.password,
 				};
-				await this.$store.dispatch('LOGIN', userData);
+				const response = await this.$store.dispatch('LOGIN', userData);
+				bus.$emit('show:toast', response.message);
 				this.$router.push('/main');
 			} catch (error) {
 				this.logMessage = error.response.data;
