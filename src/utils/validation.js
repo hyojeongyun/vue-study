@@ -6,4 +6,8 @@ const validateEmail = email => {
 		);
 };
 
-export { validateEmail };
+const validatePassword = password => {
+	return password.length >= 8;
+};
+
+export { validateEmail, validatePassword };

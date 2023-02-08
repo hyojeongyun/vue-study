@@ -97,6 +97,7 @@ body {
     margin-bottom: 0.5rem;
   }
   .btn {
+    color: white;
     background: #FE9616;
     padding: 0.5rem 1.5rem;
     font-weight: 700;

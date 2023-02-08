@@ -3,7 +3,7 @@
 		<div class="form-wrapper form-wrapper-sm">
 			<form @submit.prevent="submitForm" class="form">
 				<div>
-					<label for="username">id:</label>
+					<label for="username">ID</label>
 					<input id="username" type="text" v-model="username" />
 					<p class="validation-text">
 						<span
@@ -15,8 +15,8 @@
 					</p>
 				</div>
 				<div>
-					<label for="password">pw:</label>
-					<input id="password" type="text" v-model="password" />
+					<label for="password">PW</label>
+					<input id="password" type="password" v-model="password" />
 				</div>
 				<button
 					:disabled="!isUsernameValid || !password"
@@ -76,8 +76,4 @@ export default {
 };
 </script>
 
-<style>
-.btn {
-	color: white;
-}
-</style>
+<style></style>

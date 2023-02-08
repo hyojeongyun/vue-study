@@ -3,31 +3,49 @@
 		<div class="form-wrapper form-wrapper-sm">
 			<form @submit.prevent="submitForm" class="form">
 				<div>
-					<label for="username">id: </label>
-					<input id="username" type="text" v-model="username" />
+					<label for="username">ID</label>
+					<input
+						id="username"
+						type="text"
+						v-model="username"
+						:class="usernameValidClass"
+					/>
 					<p class="validation-text">
-						<span
-							class="warning"
-							v-if="!isUsernameValid && username"
-						>
+						<span class="warning" v-if="!isUsernameValid">
 							Please enter an email address
 						</span>
 					</p>
 				</div>
 				<div>
-					<label for="password">pw: </label>
-					<input id="password" type="text" v-model="password" />
+					<label for="password">PW</label>
+					<input
+						id="password"
+						type="password"
+						v-model="password"
+						:class="passwordValidClass"
+					/>
+					<p class="validation-text">
+						<span class="warning" v-if="!isPasswordValid">
+							Password must be over 8 letters
+						</span>
+					</p>
 				</div>
 				<div>
-					<label for="nickname">nickname: </label>
-					<input id="nickname" type="text" v-model="nickname" />
+					<label for="nickname">Nickname</label>
+					<input
+						id="nickname"
+						type="text"
+						v-model="nickname"
+						:class="nicknameValidClass"
+					/>
 				</div>
 				<button
-					:disabled="!isUsernameValid || !password || !nickname"
+					:class="isButtonDisabled"
+					:disabled="isButtonDisabled"
 					type="submit"
 					class="btn"
 				>
-					Sign Up
+					Create
 				</button>
 			</form>
 			<p class="log">{{ logMessage }}</p>
@@ -37,7 +55,8 @@
 
 <script>
 import { registerUser } from '@/api/user';
-import { validateEmail } from '@/utils/validation';
+import { validateEmail, validatePassword } from '@/utils/validation';
+import bus from '@/utils/bus.js';
 
 export default {
 	data() {
@@ -52,20 +71,58 @@ export default {
 	},
 	computed: {
 		isUsernameValid() {
+			if (!this.username) {
+				return true;
+			}
 			return validateEmail(this.username);
+		},
+		usernameValidClass() {
+			if (!this.username) {
+				return;
+			}
+			return validateEmail(this.username) ? 'valid' : 'invalid';
+		},
+		isPasswordValid() {
+			if (!this.password) {
+				return true;
+			}
+			return validatePassword(this.password);
+		},
+		passwordValidClass() {
+			if (!this.password) {
+				return true;
+			}
+			return validatePassword(this.password) ? 'valid' : 'invalid';
+		},
+		nicknameValidClass() {
+			return this.nickname ? 'valid' : null;
+		},
+		isButtonDisabled() {
+			return !this.username ||
+				!this.password ||
+				!this.nickname ||
+				!validateEmail(this.username) ||
+				!validatePassword(this.password)
+				? 'disabled'
+				: null;
 		},
 	},
 	methods: {
 		async submitForm() {
-			console.log('form 제출');
-			const userData = {
-				username: this.username,
-				password: this.password,
-				nickname: this.nickname,
-			};
-			await registerUser(userData);
-			this.logMessage = `User is created`;
-			this.initForm();
+			try {
+				await registerUser({
+					username: this.username,
+					password: this.password,
+					nickname: this.nickname,
+				});
+				this.initForm();
+				bus.$emit('show:toast', `User is created`);
+				this.$router.push('/login');
+			} catch (error) {
+				if (error.response.status === 400) {
+					this.logMessage = `${this.username} already exists`;
+				}
+			}
 		},
 		initForm() {
 			this.username = '';
@@ -76,4 +133,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped></style>
